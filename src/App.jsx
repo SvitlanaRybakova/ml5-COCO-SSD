@@ -6,6 +6,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 
 import Button from './components/Button'
 import Player from './components/Player'
+import DetectionSourceToggle from './components/DetectionSourceToggle'
 
 import video from './assets/cow.mp4'
 
@@ -22,14 +23,10 @@ function App() {
     const playerRef = useRef()
     const [detectStatus, setDetectStatus] = useState(null)
     const [isDetecting, setIsDetecting] = useState(false)
+    const [useCamera, setUseCamera] = useState(true)
 
-    const detect = (objectDetector) => {
-        // if (webcamRef.current?.video?.readyState !== 4) {
-        //     console.error('Video not ready yet')
-        //     return
-        // }
-
-        objectDetector.detect(webcamRef.current.video, (err, results) => {
+    const detect = (objectDetector, mediaStream) => {
+        objectDetector.detect(mediaStream, (err, results) => {
             if (err) {
                 console.error('Error detecting the video', err)
                 setDetectStatus('ERROR')
@@ -80,7 +77,10 @@ function App() {
         if (isDetecting) {
             const modelLoaded = () => {
                 detectionInterval = setInterval(() => {
-                    detect(objectDetector)
+                    const mediaStream = useCamera
+                        ? webcamRef.current.video
+                        : playerRef.current
+                    detect(objectDetector, mediaStream)
                 }, 1000)
             }
 
@@ -88,7 +88,7 @@ function App() {
 
             const p5Instance = new p5(sketch, sketchRef.current)
 
-            if (!isDetecting) p5Instance.remove()
+            if (!isDetecting) p5Instance.remove() // Remove p5 on stop detection
 
             return () => {
                 if (detectionInterval) {
@@ -97,7 +97,7 @@ function App() {
                 p5Instance.remove()
             }
         }
-    }, [isDetecting, width, height])
+    }, [isDetecting, width, height, useCamera])
 
     const handleButtonClickStart = () => {
         setDetectStatus('Start detecting...')
@@ -109,18 +109,25 @@ function App() {
         setIsDetecting(false)
     }
 
+    const handleToggleDetectionSource = () => {
+        setUseCamera(!useCamera) // Toggle between camera and video
+    }
+
     return (
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
             <div className="h-[500px]">
-                <Webcam ref={webcamRef} className="webcam" />
-                {/* <Player
-                    ref={playerRef}
-                    width={width}
-                    height={height}
-                    src={video}
-                    type={'video/mp4'}
-                    className="webcam"
-                /> */}
+                {useCamera ? (
+                    <Webcam ref={webcamRef} className="webcam" />
+                ) : (
+                    <Player
+                        ref={playerRef}
+                        width={width}
+                        height={height}
+                        src={video}
+                        type={'video/mp4'}
+                        className="webcam"
+                    />
+                )}
                 <div ref={sketchRef} className="canvas" />
             </div>
 
@@ -138,6 +145,10 @@ function App() {
                     disabled={!isDetecting}
                     className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                     btnText={'Stop Detecting'}
+                />
+
+                <DetectionSourceToggle
+                    handleToggle={handleToggleDetectionSource}
                 />
             </div>
         </ErrorBoundary>

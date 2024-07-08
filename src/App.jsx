@@ -14,7 +14,8 @@ function App() {
     const detections = useRef([])
     const webcamRef = useRef()
     const sketchRef = useRef()
-    const [detectLoading, setDetectLoading] = useState('Start detecting...');
+    const [detectStatus, setDetectStatus] = useState(null)
+    const [isDetecting, setIsDetecting] = useState(false)
 
     const detect = (objectDetector) => {
         if (webcamRef.current?.video.readyState !== 4) {
@@ -22,26 +23,24 @@ function App() {
             return
         }
 
-        setDetectLoading('LOADING');
+        setDetectStatus('LOADING')
 
         objectDetector.detect(webcamRef.current.video, (err, results) => {
             if (err) {
                 console.error('Error detecting the video', err)
-                setDetectLoading('ERROR');
+                setDetectStatus('ERROR')
                 return
             }
-              if (results && results.length > 0) {
-                detections.current = results;
-                setDetectLoading('READY, detecting');
+            if (results && results.length > 0) {
+                detections.current = results
+                setDetectStatus('READY, detecting')
             } else {
-                setDetectLoading('No results found');
+                setDetectStatus('No results found')
             }
-            
         })
     }
 
     const sketch = (p) => {
-
         p.setup = () => {
             p.createCanvas(width, height)
         }
@@ -71,37 +70,64 @@ function App() {
 
     useEffect(() => {
         let detectionInterval
+        let objectDetector
 
-        const modelLoaded = () => {
-            detectionInterval = setInterval(() => {
-                detect(objectDetector)
-            }, 2000)
-        }
-
-        const objectDetector = window.ml5.objectDetector('cocossd', modelLoaded)
-
-        const p5Instance = new p5(sketch, sketchRef.current)
-
-        return () => {
-            if (detectionInterval) {
-                clearInterval(detectionInterval)
+        if (isDetecting) {
+            const modelLoaded = () => {
+                detectionInterval = setInterval(() => {
+                    detect(objectDetector)
+                }, 2000)
             }
-            p5Instance.remove()
+
+            objectDetector = window.ml5.objectDetector('cocossd', modelLoaded)
+
+            const p5Instance = new p5(sketch, sketchRef.current)
+
+            return () => {
+                if (detectionInterval) {
+                    clearInterval(detectionInterval)
+                }
+                p5Instance.remove()
+            }
         }
-    }, [width, height])
+    }, [isDetecting, width, height])
+
+    const handleButtonClickStart = () => {
+        setDetectStatus('Start detecting...')
+        setIsDetecting(true)
+    }
+
+    const handleButtonClickStop = () => {
+        setDetectStatus('Stop detecting')
+        setIsDetecting(false)
+        setDetectStatus(null)
+    }
 
     return (
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            <div>
-                <Webcam ref={webcamRef} className="webcam" />
-                <div ref={sketchRef} className="canvas"></div>
-            </div>
-    <p>{detectLoading}</p>
+            {isDetecting && (
+                <div>
+                    <Webcam ref={webcamRef} className="webcam" />
+                    <div ref={sketchRef} className="canvas"></div>
+                </div>
+            )}
+            {detectStatus && <p>{detectStatus}</p>}
             <button
+                onClick={handleButtonClickStart}
+                disabled={isDetecting}
                 type="button"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
             >
-                Default
+                Start Detecting
+            </button>
+
+            <button
+                onClick={handleButtonClickStop}
+                disabled={!isDetecting}
+                type="button"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            >
+                Stop Detecting
             </button>
         </ErrorBoundary>
     )

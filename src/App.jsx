@@ -123,10 +123,13 @@ function App() {
                         handleButtonClickStop={handleButtonClickStop}
                         isDetecting={isDetecting}
                     />
-                    <p className="text-black mt-10 h-[80px]">{isDetecting ? `Status: ${detectStatus}`: ''}</p>
-                    <div className="min-h-[256px] max-w-full relative">
+                    <p className="text-black mt-10 h-[80px]">
+                        {isDetecting ? `Status: ${detectStatus}` : ''}
+                    </p>
+                    <div className="relative">
                         {useCamera ? (
-                            <Webcam ref={webcamRef} className="webcam" />
+                            <Webcam 
+                            ref={webcamRef}  />
                         ) : (
                             <Player
                                 key={selectedVideo} // Add key prop to force re-render
@@ -135,7 +138,6 @@ function App() {
                                 height={height}
                                 src={selectedVideo}
                                 type={'video/mp4'}
-                                className="webcam"
                             />
                         )}
                         <div ref={sketchRef} className="canvas" />

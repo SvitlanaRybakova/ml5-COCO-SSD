@@ -11,11 +11,15 @@ const ButtonsSet = ({
 }) => {
     return (
         <div className="flex flex-col items-center justify-center lg:flex-row">
-            <div className={isDetecting ? "" : "pulse-animation"}>
+            <div className={isDetecting ? '' : 'pulse-animation'}>
                 <Button
-                    handleClick={isDetecting ? handleButtonClickStop :  handleButtonClickStart }
-                    className={isDetecting ? "stop" : "play" }
-                    btnText={isDetecting ? buttonName.STOP :  buttonName.START }
+                    handleClick={
+                        isDetecting
+                            ? handleButtonClickStop
+                            : handleButtonClickStart
+                    }
+                    className={isDetecting ? 'stop' : 'play'}
+                    btnText={isDetecting ? buttonName.STOP : buttonName.START}
                 />
             </div>
 

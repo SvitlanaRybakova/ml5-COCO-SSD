@@ -5,13 +5,6 @@
     text-align: center;
 }
 
-.webcam {
-    /* position: absolute; */
-    width: 100%;
-    height: auto;
-    position: relative;
-}
-
 .canvas {
     /* position: relative; */
     width: 100%;
@@ -37,7 +30,8 @@
     animation: pulse 1.5s ease-in-out 3s infinite;
 }
 
-.play, .stop {
+.play,
+.stop {
     /* display: flex; */
     /* align-items: center; */
     /* justify-content: center; */
@@ -54,7 +48,7 @@
 }
 
 .play::before {
-    content: "";
+    content: '';
     width: 100px;
     height: 100px;
     background: #3b82f680;
@@ -67,5 +61,5 @@
 }
 
 .stop {
-    background: #9D2929;
+    background: #9d2929;
 }

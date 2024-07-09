@@ -110,7 +110,7 @@ function App() {
     const handleVideoSelect = (src) => {
         setSelectedVideo(src)
     }
-    console.log('click', selectedVideo)
+
     return (
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
             <div className="lg:flex justify-between">
@@ -144,7 +144,10 @@ function App() {
 
                 {!useCamera && (
                     <div className="lg:w-[30%]">
-                        <VideoList onVideoSelect={handleVideoSelect} />
+                        <VideoList
+                            onVideoSelect={handleVideoSelect}
+                            selectedVideo={selectedVideo}
+                        />
                     </div>
                 )}
             </div>

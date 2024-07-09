@@ -1,18 +1,18 @@
 import { v4 as uuidv4 } from 'uuid'
-import cars_in_desert from '../assets/cars_in_desert.mp4'
+import car from '../assets/car.mp4'
 import cat from '../assets/cat.mp4'
 import child from '../assets/child.mp4'
 import cow from '../assets/cow.mp4'
 import dog from '../assets/dog.mp4'
 import kitten from '../assets/kitten.mp4'
 import penguins from '../assets/penguins.mp4'
-import running_man from '../assets/running_man.mp4'
+import woman from '../assets/women.mp4'
 
 export const videoItems = [
     {
         id: uuidv4(),
-        title: 'Cars in a desert',
-        src: cars_in_desert,
+        title: 'Car',
+        src: car,
     },
     {
         id: uuidv4(),
@@ -46,8 +46,8 @@ export const videoItems = [
     },
     {
         id: uuidv4(),
-        title: 'Running person',
-        src: running_man,
+        title: 'Woman',
+        src: woman,
     },
 ]
 

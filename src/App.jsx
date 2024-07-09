@@ -3,12 +3,10 @@ import Webcam from 'react-webcam'
 import p5 from 'p5'
 import './App.css'
 import ErrorBoundary from './components/ErrorBoundary'
-
 import Player from './components/Player'
-import video from './assets/cow.mp4'
 import ButtonsSet from './components/ButtonsSet'
-import { DIMENTIONS, status } from './utils/constants'
 import VideoList from './components/VideoList'
+import { DIMENTIONS, status, videoItems } from './utils/constants'
 
 function App() {
     const { width, height } = DIMENTIONS
@@ -19,6 +17,7 @@ function App() {
     const [detectStatus, setDetectStatus] = useState(null)
     const [isDetecting, setIsDetecting] = useState(false)
     const [useCamera, setUseCamera] = useState(true)
+    const [selectedVideo, setSelectedVideo] = useState(videoItems[0].src)
 
     const detect = (objectDetector, mediaStream) => {
         objectDetector.detect(mediaStream, (err, results) => {
@@ -105,44 +104,50 @@ function App() {
     }
 
     const handleToggleDetectionSource = () => {
-        setUseCamera(!useCamera) 
+        setUseCamera(!useCamera)
     }
 
+    const handleVideoSelect = (src) => {
+        setSelectedVideo(src)
+    }
+    console.log('click', selectedVideo)
     return (
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
             <div className="lg:flex justify-between">
-            <div className="flex flex-col lg:w-[60%]">
-                <ButtonsSet
-                    handleToggleDetectionSource={handleToggleDetectionSource}
-                    handleButtonClickStart={handleButtonClickStart}
-                    handleButtonClickStop={handleButtonClickStop}
-                    isDetecting={isDetecting}
-                />
-                <p className="text-black mt-10 h-[80px]">{detectStatus}</p>
-                <div className="min-h-[256px] max-w-full relative">
-                    {useCamera ? (
-                        <Webcam ref={webcamRef} className="webcam" />
-                    ) : (
-                        <Player
-                            ref={playerRef}
-                            width={width}
-                            height={height}
-                            src={video}
-                            type={'video/mp4'}
-                            className="webcam"
-                        />
-                    )}
-                    <div ref={sketchRef} className="canvas" />
+                <div className="flex flex-col lg:w-[60%]">
+                    <ButtonsSet
+                        handleToggleDetectionSource={
+                            handleToggleDetectionSource
+                        }
+                        handleButtonClickStart={handleButtonClickStart}
+                        handleButtonClickStop={handleButtonClickStop}
+                        isDetecting={isDetecting}
+                    />
+                    <p className="text-black mt-10 h-[80px]">{detectStatus}</p>
+                    <div className="min-h-[256px] max-w-full relative">
+                        {useCamera ? (
+                            <Webcam ref={webcamRef} className="webcam" />
+                        ) : (
+                            <Player
+                                key={selectedVideo} // Add key prop to force re-render
+                                ref={playerRef}
+                                width={width}
+                                height={height}
+                                src={selectedVideo}
+                                type={'video/mp4'}
+                                className="webcam"
+                            />
+                        )}
+                        <div ref={sketchRef} className="canvas" />
+                    </div>
                 </div>
+
+                {!useCamera && (
+                    <div className="lg:w-[30%]">
+                        <VideoList onVideoSelect={handleVideoSelect} />
+                    </div>
+                )}
             </div>
-       
-       {!useCamera && (
-              <div className="lg:w-[30%]">
-           <VideoList />
-       </div>
-       )}
-    
-        </div>
         </ErrorBoundary>
     )
 }

@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 import cars_in_desert from '../assets/cars_in_desert.mp4'
 import cat from '../assets/cat.mp4'
 import child from '../assets/child.mp4'
@@ -9,46 +9,46 @@ import penguins from '../assets/penguins.mp4'
 import running_man from '../assets/running_man.mp4'
 
 export const videoItems = [
-  {
-    id: uuidv4(),
-    title: "Cars in a desert",
-    src: cars_in_desert
-  },
     {
-    id: uuidv4(),
-    title: "Cat",
-    src: cat
-  },
+        id: uuidv4(),
+        title: 'Cars in a desert',
+        src: cars_in_desert,
+    },
     {
-    id: uuidv4(),
-    title: "Child",
-    src: child
-  },
+        id: uuidv4(),
+        title: 'Cat',
+        src: cat,
+    },
     {
-    id: uuidv4(),
-    title: "Cow",
-    src: cow
-  },
-  {
-    id: uuidv4(),
-    title: "Dog",
-    src: dog
-  },
+        id: uuidv4(),
+        title: 'Child',
+        src: child,
+    },
     {
-    id: uuidv4(),
-    title: "Kitten",
-    src: kitten
-  },
+        id: uuidv4(),
+        title: 'Cow',
+        src: cow,
+    },
     {
-    id: uuidv4(),
-    title: "Penguins",
-    src: penguins
-  },
+        id: uuidv4(),
+        title: 'Dog',
+        src: dog,
+    },
     {
-    id: uuidv4(),
-    title: "Running person",
-    src: running_man
-  }
+        id: uuidv4(),
+        title: 'Kitten',
+        src: kitten,
+    },
+    {
+        id: uuidv4(),
+        title: 'Penguins',
+        src: penguins,
+    },
+    {
+        id: uuidv4(),
+        title: 'Running person',
+        src: running_man,
+    },
 ]
 
 export const DIMENTIONS = {

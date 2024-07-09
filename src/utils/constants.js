@@ -57,15 +57,15 @@ export const DIMENTIONS = {
 }
 
 export const buttonName = {
-    START: 'Start Detecting',
-    STOP: 'Stop Detecting',
+    START: 'Start',
+    STOP: 'Stop',
     TOGGLE_SOURCE: 'Camera source / Video',
 }
 
 export const status = {
-    START: 'Start detecting...',
+    START: 'PREPARING for detection, please hold on ...',
     READY: 'READY, detecting',
-    STOP: 'Stop detecting',
+    STOP: 'STOP detecting',
     NO_RESULTS: 'No results found',
-    ERROR: 'Error detecting the video',
+    ERROR: 'ERROR detecting the video, press the START button',
 }

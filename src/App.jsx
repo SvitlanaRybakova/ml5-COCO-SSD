@@ -123,7 +123,7 @@ function App() {
                         handleButtonClickStop={handleButtonClickStop}
                         isDetecting={isDetecting}
                     />
-                    <p className="text-black mt-10 h-[80px]">{detectStatus}</p>
+                    <p className="text-black mt-10 h-[80px]">{isDetecting ? `Status: ${detectStatus}`: ''}</p>
                     <div className="min-h-[256px] max-w-full relative">
                         {useCamera ? (
                             <Webcam ref={webcamRef} className="webcam" />

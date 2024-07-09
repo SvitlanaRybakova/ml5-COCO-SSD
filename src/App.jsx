@@ -4,19 +4,13 @@ import p5 from 'p5'
 import './App.css'
 import ErrorBoundary from './components/ErrorBoundary'
 
-import Button from './components/Button'
 import Player from './components/Player'
-import DetectionSourceToggle from './components/DetectionSourceToggle'
-
 import video from './assets/cow.mp4'
-
-const dimensions = {
-    width: 800,
-    height: 500,
-}
+import ButtonsSet from './components/ButtonsSet'
+import { DIMENTIONS, status } from './utils/constants'
 
 function App() {
-    const { width, height } = dimensions
+    const { width, height } = DIMENTIONS
     const detections = useRef([])
     const webcamRef = useRef()
     const sketchRef = useRef()
@@ -29,15 +23,15 @@ function App() {
         objectDetector.detect(mediaStream, (err, results) => {
             if (err) {
                 console.error('Error detecting the video', err)
-                setDetectStatus('ERROR')
+                setDetectStatus(status.ERROR)
                 setIsDetecting(false)
                 return
             }
             if (results && results.length > 0) {
                 detections.current = results
-                setDetectStatus('READY, detecting')
+                setDetectStatus(status.READY)
             } else {
-                setDetectStatus('No results found')
+                setDetectStatus(status.NO_RESULTS)
             }
         })
     }
@@ -100,12 +94,12 @@ function App() {
     }, [isDetecting, width, height, useCamera])
 
     const handleButtonClickStart = () => {
-        setDetectStatus('Start detecting...')
+        setDetectStatus(status.START)
         setIsDetecting(true)
     }
 
     const handleButtonClickStop = () => {
-        setDetectStatus('Stop detecting')
+        setDetectStatus(status.STOP)
         setIsDetecting(false)
     }
 
@@ -115,8 +109,15 @@ function App() {
 
     return (
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            <div className=" w-[60%] flex flex-col items-stretch">
-                <div className="h-[500px]">
+            <div className="flex flex-col lg:w-[60%] items-stretch">
+                <ButtonsSet
+                    handleToggleDetectionSource={handleToggleDetectionSource}
+                    handleButtonClickStart={handleButtonClickStart}
+                    handleButtonClickStop={handleButtonClickStop}
+                    isDetecting={isDetecting}
+                />
+                <p className="text-black mt-10 h-[80px]">{detectStatus}</p>
+                <div>
                     {useCamera ? (
                         <Webcam ref={webcamRef} className="webcam" />
                     ) : (
@@ -130,27 +131,6 @@ function App() {
                         />
                     )}
                     <div ref={sketchRef} className="canvas" />
-                </div>
-
-                <div>
-                    <p className="text-black h-[40px]">{detectStatus}</p>
-                    <Button
-                        handleClick={handleButtonClickStart}
-                        disabled={isDetecting}
-                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-                        btnText={'Start Detecting'}
-                    />
-
-                    <Button
-                        handleClick={handleButtonClickStop}
-                        disabled={!isDetecting}
-                        className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                        btnText={'Stop Detecting'}
-                    />
-
-                    <DetectionSourceToggle
-                        handleToggle={handleToggleDetectionSource}
-                    />
                 </div>
             </div>
         </ErrorBoundary>

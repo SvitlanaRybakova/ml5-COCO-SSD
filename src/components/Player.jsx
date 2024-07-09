@@ -1,5 +1,4 @@
-import React, { useRef } from 'react'
-
+import React from 'react'
 import { forwardRef } from 'react'
 
 const Player = forwardRef(function Player(
@@ -8,10 +7,13 @@ const Player = forwardRef(function Player(
 ) {
     return (
         <video
+            className="w-full"
             width={width}
             ref={ref}
             height={height}
             className={className}
+            autoPlay 
+            muted 
             controls
             loop
         >

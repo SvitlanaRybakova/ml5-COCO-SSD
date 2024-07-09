@@ -12,8 +12,8 @@ const Player = forwardRef(function Player(
             ref={ref}
             height={height}
             className={className}
-            autoPlay 
-            muted 
+            autoPlay
+            muted
             controls
             loop
         >

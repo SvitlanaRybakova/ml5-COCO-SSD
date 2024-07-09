@@ -6,9 +6,17 @@
 }
 
 .webcam {
-    position: absolute;
+    /* position: absolute; */
+    width: 100%;
+    height: auto;
+    position: relative;
 }
 
 .canvas {
-    position: relative;
+    /* position: relative; */
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
 }

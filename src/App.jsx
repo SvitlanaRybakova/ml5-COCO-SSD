@@ -8,6 +8,7 @@ import Player from './components/Player'
 import video from './assets/cow.mp4'
 import ButtonsSet from './components/ButtonsSet'
 import { DIMENTIONS, status } from './utils/constants'
+import VideoList from './components/VideoList'
 
 function App() {
     const { width, height } = DIMENTIONS
@@ -104,12 +105,13 @@ function App() {
     }
 
     const handleToggleDetectionSource = () => {
-        setUseCamera(!useCamera) // Toggle between camera and video
+        setUseCamera(!useCamera) 
     }
 
     return (
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
-            <div className="flex flex-col lg:w-[60%] items-stretch">
+            <div className="lg:flex justify-between">
+            <div className="flex flex-col lg:w-[60%]">
                 <ButtonsSet
                     handleToggleDetectionSource={handleToggleDetectionSource}
                     handleButtonClickStart={handleButtonClickStart}
@@ -117,7 +119,7 @@ function App() {
                     isDetecting={isDetecting}
                 />
                 <p className="text-black mt-10 h-[80px]">{detectStatus}</p>
-                <div>
+                <div className="min-h-[256px] max-w-full relative">
                     {useCamera ? (
                         <Webcam ref={webcamRef} className="webcam" />
                     ) : (
@@ -133,6 +135,14 @@ function App() {
                     <div ref={sketchRef} className="canvas" />
                 </div>
             </div>
+       
+       {!useCamera && (
+              <div className="lg:w-[30%]">
+           <VideoList />
+       </div>
+       )}
+    
+        </div>
         </ErrorBoundary>
     )
 }

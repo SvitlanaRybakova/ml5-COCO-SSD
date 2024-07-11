@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
-import p5 from 'p5'
 import './App.css'
 import ErrorBoundary from './components/ErrorBoundary'
 import Player from './components/Player'
@@ -12,17 +11,25 @@ function App() {
     const { width, height } = DIMENTIONS
     const detections = useRef([])
     const webcamRef = useRef()
-    const sketchRef = useRef()
+    const canvasRef = useRef()
     const playerRef = useRef()
     const [detectStatus, setDetectStatus] = useState(null)
     const [isDetecting, setIsDetecting] = useState(false)
     const [useCamera, setUseCamera] = useState(true)
     const [selectedVideo, setSelectedVideo] = useState(videoItems[0].src)
 
+    const clearCanvas = (context, canvas) => {
+        context.clearRect(0, 0, canvas.width, canvas.height)
+    }
+
     const detect = (objectDetector, mediaStream) => {
+        const canvas = canvasRef.current
+        const context = canvas.getContext('2d')
+
         objectDetector.detect(mediaStream, (err, results) => {
             if (err) {
                 console.error('Error detecting the video', err)
+                clearCanvas(context, canvas)
                 setDetectStatus(status.ERROR)
                 setIsDetecting(false)
                 return
@@ -31,37 +38,36 @@ function App() {
                 detections.current = results
                 setDetectStatus(status.READY)
             } else {
+                clearCanvas(context, canvas)
                 setDetectStatus(status.NO_RESULTS)
             }
         })
     }
 
-    const sketch = (p) => {
-        p.setup = () => {
-            p.createCanvas(width, height)
-        }
+    const drawDetections = () => {
+        const canvas = canvasRef.current
+        const context = canvas.getContext('2d')
 
-        p.draw = () => {
-            p.clear()
+        clearCanvas(context, canvas)
 
-            detections.current.forEach((detection) => {
-                p.noFill()
-                p.stroke(21, 225, 43)
-                p.rect(
-                    detection.x,
-                    detection.y,
-                    detection.width,
-                    detection.height
-                )
-                p.textSize(16)
-                p.fill(0, 0, 0)
-                p.text(
-                    detection.label,
-                    detection.x,
-                    detection.y > 10 ? detection.y - 5 : 10
-                )
-            })
-        }
+        detections.current.forEach((detection) => {
+            context.strokeStyle = 'rgb(21, 225, 43)'
+            context.lineWidth = 2
+            context.strokeRect(
+                detection.x,
+                detection.y,
+                detection.width,
+                detection.height
+            )
+
+            context.font = '20px Arial'
+            context.fillStyle = 'rgb(21, 225, 43)'
+            context.fillText(
+                detection.label,
+                detection.x,
+                detection.y > 10 ? detection.y - 5 : 10
+            )
+        })
     }
 
     useEffect(() => {
@@ -80,18 +86,20 @@ function App() {
 
             objectDetector = window.ml5.objectDetector('cocossd', modelLoaded)
 
-            const p5Instance = new p5(sketch, sketchRef.current)
-
-            if (!isDetecting) p5Instance.remove() // Remove p5 on stop detection
-
             return () => {
                 if (detectionInterval) {
                     clearInterval(detectionInterval)
                 }
-                p5Instance.remove()
             }
         }
-    }, [isDetecting, width, height, useCamera])
+    }, [isDetecting, useCamera])
+
+    useEffect(() => {
+        if (isDetecting) {
+            const interval = setInterval(drawDetections, 1000 / 30) // 30 fps for drawing
+            return () => clearInterval(interval)
+        }
+    }, [isDetecting])
 
     const handleButtonClickStart = () => {
         setDetectStatus(status.START)
@@ -126,10 +134,13 @@ function App() {
                     <p className="text-black mt-10 h-[80px]">
                         {isDetecting ? `Status: ${detectStatus}` : ''}
                     </p>
-                    <div className="relative">
+                    <div className="relative video-container">
                         {useCamera ? (
-                            <Webcam 
-                            ref={webcamRef}  />
+                            <Webcam
+                                ref={webcamRef}
+                                width={width}
+                                height={height}
+                            />
                         ) : (
                             <Player
                                 key={selectedVideo} // Add key prop to force re-render
@@ -140,7 +151,12 @@ function App() {
                                 type={'video/mp4'}
                             />
                         )}
-                        <div ref={sketchRef} className="canvas" />
+                        <canvas
+                            ref={canvasRef}
+                            className="canvas"
+                            width={width}
+                            height={height}
+                        />
                     </div>
                 </div>
 

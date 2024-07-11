@@ -5,7 +5,12 @@ import ErrorBoundary from './components/ErrorBoundary'
 import Player from './components/Player'
 import ButtonsSet from './components/ButtonsSet'
 import VideoList from './components/VideoList'
+import Readme from './components/Readme'
 import { DIMENTIONS, status, videoItems } from './utils/constants'
+
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import Status from './Status'
 
 function App() {
     const { width, height } = DIMENTIONS
@@ -92,6 +97,9 @@ function App() {
                 }
             }
         }
+        if (!isDetecting) {
+            toast.warn('Detection Discontinued')
+        }
     }, [isDetecting, useCamera])
 
     useEffect(() => {
@@ -121,8 +129,10 @@ function App() {
 
     return (
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
+            <Readme />
             <div className="lg:flex justify-between">
                 <div className="flex flex-col lg:w-[60%]">
+                  
                     <ButtonsSet
                         handleToggleDetectionSource={
                             handleToggleDetectionSource
@@ -132,7 +142,7 @@ function App() {
                         isDetecting={isDetecting}
                     />
                     <p className="text-black mt-10 h-[80px]">
-                        {isDetecting ? `Status: ${detectStatus}` : ''}
+                        {isDetecting ? <Status statusText={detectStatus}/>: ''} 
                     </p>
                     <div className="relative video-container">
                         {useCamera ? (
@@ -169,6 +179,7 @@ function App() {
                     </div>
                 )}
             </div>
+            <ToastContainer />
         </ErrorBoundary>
     )
 }

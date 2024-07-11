@@ -5,7 +5,7 @@ import { videoItems } from '../utils/constants'
 const VideoList = ({ onVideoSelect, selectedVideo }) => {
     return (
         <div>
-            <h1 className="text-2xl font-black text-gray-900 m-4">
+            <h1 className="text-2xl font-black text-gray-700 m-4">
                 Video List
             </h1>
             {videoItems &&

@@ -69,3 +69,18 @@ export const status = {
     NO_RESULTS: 'No results found',
     ERROR: 'ERROR detecting the video, press the START button',
 }
+
+export const instrunction = [
+    {
+        id: uuidv4(),
+        text: "To start or stop detection, press the 'Start' or 'Stop' button",
+    },
+    {
+        id: uuidv4(),
+        text: 'To switch between the camera source and a random video, please use the toggle button',
+    },
+    {
+        id: uuidv4(),
+        text: 'If you are using the camera, you need to grant permission to your browser',
+    },
+]

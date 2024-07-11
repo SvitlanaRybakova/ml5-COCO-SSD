@@ -132,7 +132,6 @@ function App() {
             <Readme />
             <div className="lg:flex justify-between">
                 <div className="flex flex-col lg:w-[60%]">
-                  
                     <ButtonsSet
                         handleToggleDetectionSource={
                             handleToggleDetectionSource
@@ -142,7 +141,11 @@ function App() {
                         isDetecting={isDetecting}
                     />
                     <p className="text-black mt-10 h-[80px]">
-                        {isDetecting ? <Status statusText={detectStatus}/>: ''} 
+                        {isDetecting ? (
+                            <Status statusText={detectStatus} />
+                        ) : (
+                            ''
+                        )}
                     </p>
                     <div className="relative video-container">
                         {useCamera ? (
